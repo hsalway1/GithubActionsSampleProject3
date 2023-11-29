@@ -65,7 +65,7 @@ function check_emulator_status () {
         
     done
 
-    echo "Emulator is ready!"
+    echo "Emulator is ready"
     exit 0
 }
 
