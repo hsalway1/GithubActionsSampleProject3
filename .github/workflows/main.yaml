@@ -53,13 +53,19 @@ jobs:
         run: ./gradlew installDebug
 
       - name: Installed packages
-        run: adb shell cmd package list packages
+        run: |
+          sleep 3
+          adb shell cmd package list packages
 
       - name: Launch app
-        run: adb shell am start -n com.example.githubactionssampleproject3/com.example.githubactionssampleproject3.MainActivity
+        run: |
+          sleep 2
+          adb shell am start -n com.example.githubactionssampleproject3/com.example.githubactionssampleproject3.MainActivity
 
       - name: Memory info
-        run: adb shell dumpsys meminfo com.example.githubactionssampleproject3
+        run: |
+          sleep 5
+          adb shell dumpsys meminfo com.example.githubactionssampleproject3
 
       - name: Print processes
         run: adb shell top
