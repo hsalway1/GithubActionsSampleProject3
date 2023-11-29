@@ -46,6 +46,9 @@ jobs:
       - name: Install app
         run: ./gradlew installDebug
 
+      - name: Launch app
+        run: adb shell am start -n com.example.githubactionssampleproject3/com.example.githubactionssampleproject3.MainActivity
+
       - name: Memory info
         run: adb shell dumpsys meminfo com.example.githubactionssampleproject3
 
