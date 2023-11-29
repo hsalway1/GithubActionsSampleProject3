@@ -58,7 +58,7 @@ function check_emulator_status () {
         (( runtime+=5 ))
         sleep 5
 
-        if (( runtime > 240 )); then
+        if (( runtime > 480 )); then
             echo "timeout"
             exit 1
         fi
