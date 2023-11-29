@@ -61,6 +61,8 @@ function check_emulator_status () {
         if (( runtime > 240 )); then
             echo "timeout"
             exit 1
+        fi
+        
     done
 
     echo "Emulator is ready!"
