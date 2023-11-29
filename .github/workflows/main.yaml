@@ -52,6 +52,9 @@ jobs:
       - name: Install app
         run: ./gradlew installDebug
 
+      - name: Installed packages
+        run: adb shell cmd package list packages
+
       - name: Launch app
         run: adb shell am start -n com.example.githubactionssampleproject3/com.example.githubactionssampleproject3.MainActivity
 
