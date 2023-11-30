@@ -80,6 +80,5 @@ jobs:
     - name: Get memory info of the app
       run: |
         sleep 3
-        adb shell dumpsys meminfo com.example.githubactionssampleproject3
-
-    
+        chmod +x ./Scripts/heap_memory_usage.sh
+        bash ./Scripts/heap_memory_usage.sh
