@@ -85,6 +85,6 @@ jobs:
         
     - name: Print Heap memory usage
       run: |
-        sleep 1
+        sleep 2
         chmod +x ./Scripts/heap_memory_usage.sh
         bash ./Scripts/heap_memory_usage.sh
