@@ -87,4 +87,3 @@ jobs:
       run: |
         sleep 1
         chmod +x ./Scripts/heap_memory_usage.sh
-        bash ./Scripts/heap_memory_usage.sh
