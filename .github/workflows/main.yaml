@@ -10,7 +10,7 @@ env:
   HOME: '/home/runner/.config'
 
 jobs:
-  bidder-token-gen-time:
+  heap-memory-usage:
 
     runs-on: ubuntu-latest
 
