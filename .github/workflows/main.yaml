@@ -2,19 +2,27 @@ name: Android CI
 
 on:
   push:
-    branches: [ "master" ]
+    branches:
+      - master
   pull_request:
-    branches: [ "master" ]
+    branches:
+      - '*'
 
 env:
   HOME: '/home/runner/.config'
 
 jobs:
-  bootup:
+  setup:
 
     runs-on: ubuntu-latest
 
+    outputs:
+      android-home: ${{ steps.android-setup.outputs.android-home }}
+      java-home: ${{ steps.java-setup.outputs.java-home }}
+      emulator-id: ${{ steps.create-emulator.outputs.emulator-id }}
+
     steps:
+      
     - name: Checkout the code
       uses: actions/checkout@v3
 
@@ -60,49 +68,48 @@ jobs:
     - name: Create emulator
       run: echo "no" |
         avdmanager create avd -n TestAVD -k "system-images;android-30;google_apis_playstore;x86_64"
+        echo "::set-output name=emulator-id::TestAVD"
 
-    - name: Launch Emulator
-      #run: $ANDROID_HOME/emulator/emulator -avd TestAVD -no-audio &
-      run: |       
-        echo "Starting emulator and waiting for boot to complete...."
-        #ls -la $ANDROID_HOME/emulator
-        $ANDROID_HOME/emulator/emulator -avd TestAVD -no-skin -no-audio -no-window &
-        $ANDROID_HOME/platform-tools/adb wait-for-device 
-        echo "Emulator has finished booting"
-        adb devices
-        
-    - name: Boot emulator
-      run: adb shell getprop sys.boot_completed
-
-    - name: Install App
-      run: |
-        ./gradlew installDebug
-
-    - uses: actions/upload-artifact@master
-      with:
-        name: my-artifact
-        path: ./
+    - run: echo "::set-output name=android-home::$ANDROID_HOME"
+    - run: echo "::set-output name=java-home::$JAVA_HOME"
 
   heap_memory_usage:
   
     runs-on: ubuntu-latest
     name: Heap memory profiling
-    needs: bootup
+    needs: setup
+
+    env:
+       ANDROID_HOME: ${{ needs.setup.outputs.android-home }}
+       JAVA_HOME: ${{ needs.setup.outputs.java-home }}
+       EMULATOR_ID: ${{ needs.create-emulator.outputs.emulator-id }}
 
     steps:
+          
       - uses: actions/checkout@master
   
-      - uses: actions/download-artifact@master
-        with:
-          name: my-artifact
-          run: chmod +x ./
-          path: ./
+      - name: Launch Emulator
+      #run: $ANDROID_HOME/emulator/emulator -avd TestAVD -no-audio &
+        run: |       
+          echo "Starting emulator and waiting for boot to complete...."
+          #ls -la $ANDROID_HOME/emulator
+          $ANDROID_HOME/emulator/emulator -avd $EMULATOR_ID -no-skin -no-audio -no-window &
+          $ANDROID_HOME/platform-tools/adb wait-for-device 
+          echo "Emulator has finished booting"
+          adb devices
         
+      - name: Boot emulator
+        run: adb shell getprop sys.boot_completed
+  
+      - name: Install App
+        run: |
+          ./gradlew installDebug
+          
       - name: Launch app
         run: |
           sleep 2
           ./adb shell am start -n com.example.githubactionssampleproject3/com.example.githubactionssampleproject3.MainActivity
-  
+    
       - name: Print heap memory usage\
         run: |
           sleep 2
