@@ -12,8 +12,8 @@ echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sud
 sudo udevadm control --reload-rules
 sudo udevadm trigger --name-match=kvm
 
-sudo adduser $USER kvm
-sudo chown $USER /dev/kvm
+sudo adduser "$USER" kvm
+sudo chown "$USER" /dev/kvm
 
 echo "\n\n Installing system image"
 sdkmanager --install 'system-images;android-30;google_apis_playstore;x86_64'
@@ -22,8 +22,8 @@ echo "\n\n Creating emulator"
 echo "no" | avdmanager create avd -n TestAVD -k "system-images;android-30;google_apis_playstore;x86_64"
 
 echo "\n\n Starting emulator and waiting for boot to complete...."
-$ANDROID_HOME/emulator/emulator -avd TestAVD -no-skin -no-audio -no-window &
-$ANDROID_HOME/platform-tools/adb wait-for-device 
+"$ANDROID_HOME"/emulator/emulator -avd TestAVD -no-skin -no-audio -no-window &
+"$ANDROID_HOME"/platform-tools/adb wait-for-device 
 echo "Emulator has finished booting"
 adb devices
 
