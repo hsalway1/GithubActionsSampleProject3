@@ -78,17 +78,29 @@ jobs:
       run: |
         ./gradlew installDebug
 
+    - uses: actions/upload-artifact@master
+      with:
+        name: my-artifact
+        path: ./
+
   heap_memory_usage:
   
     runs-on: ubuntu-latest
     name: Heap memory profiling
     needs: bootup
-  
+
     steps:
+      - uses: actions/checkout@master
+  
+      - uses: actions/download-artifact@master
+        with:
+          name: my-artifact
+          path: ./
+        
       - name: Launch app
         run: |
           sleep 2
-          adb shell am start -n com.example.githubactionssampleproject3/com.example.githubactionssampleproject3.MainActivity
+          ./adb shell am start -n com.example.githubactionssampleproject3/com.example.githubactionssampleproject3.MainActivity
   
       - name: Print heap memory usage\
         run: |
