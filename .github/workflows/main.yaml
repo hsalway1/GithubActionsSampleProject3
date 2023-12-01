@@ -35,13 +35,13 @@ jobs:
         cache: gradle
 
     - name: Setup Android SDK
-      id: android-setup
       uses: android-actions/setup-android@v3
 
     - name: Install Additional packages - emulator
       run: sdkmanager emulator
 
     - name: Install additional packages - platform-tools
+      id: android-setup
       run: sdkmanager platform-tools
 
     - name: Install libpulse
