@@ -10,11 +10,14 @@ env:
   HOME: '/home/runner/.config'
 
 jobs:
-  bootup:
 
+  heap_memory_usage:
+  
     runs-on: ubuntu-latest
+    name: Heap memory profiling
 
     steps:
+
     - name: Checkout the code
       uses: actions/checkout@v3
 
@@ -28,83 +31,13 @@ jobs:
     - name: Setup Android SDK
       uses: android-actions/setup-android@v3
 
-    - name: Install Additional packages - emulator
-      run: sdkmanager emulator
-
-    - name: Install additional packages - platform-tools
-      run: sdkmanager platform-tools
-
-    - name: Install libpulse
-      run: sudo apt -y install libpulse-dev
-
-    - name: Install and add user to kvm
-      run: sudo apt-get update
-    - run: sudo apt install qemu-kvm
-    - run: sudo apt install virt-manager
-
-    #- run: egrep -c '(vmx|svm)' /proc/cpuinfo
-    #- run: kvm-ok 
-    - name: Enable KVM group perms
+    - name: Setting up additional libraries, installiing and launching App
       run: |
-          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
-          sudo udevadm control --reload-rules
-          sudo udevadm trigger --name-match=kvm
-    
-    - run: sudo adduser $USER kvm
-
-    - run: sudo chown $USER /dev/kvm 
-
-    - name: Install System Image
-      run: sdkmanager --install 'system-images;android-30;google_apis_playstore;x86_64'
-
-    - name: Create emulator
-      run: echo "no" |
-        avdmanager create avd -n TestAVD -k "system-images;android-30;google_apis_playstore;x86_64"
-
-    - name: Launch Emulator
-      #run: $ANDROID_HOME/emulator/emulator -avd TestAVD -no-audio &
-      run: |       
-        echo "Starting emulator and waiting for boot to complete...."
-        #ls -la $ANDROID_HOME/emulator
-        $ANDROID_HOME/emulator/emulator -avd TestAVD -no-skin -no-audio -no-window &
-        $ANDROID_HOME/platform-tools/adb wait-for-device 
-        echo "Emulator has finished booting"
-        adb devices
-        
-    - name: Boot emulator
-      run: adb shell getprop sys.boot_completed
-
-    - name: Install App
+        chmod +x ./Scripts/additional_setup.sh
+        bash ./Scripts/additional_setup.sh
+  
+    - name: Print heap memory usage\
       run: |
-        ./gradlew installDebug
-
-    - uses: actions/upload-artifact@master
-      with:
-        name: my-artifact
-        path: ./
-
-  heap_memory_usage:
-  
-    runs-on: ubuntu-latest
-    name: Heap memory profiling
-    needs: bootup
-
-    steps:
-      - uses: actions/checkout@master
-  
-      - uses: actions/download-artifact@master
-        with:
-          name: my-artifact
-          run: chmod +x ./
-          path: ./
-        
-      - name: Launch app
-        run: |
-          sleep 2
-          ./adb shell am start -n com.example.githubactionssampleproject3/com.example.githubactionssampleproject3.MainActivity
-  
-      - name: Print heap memory usage\
-        run: |
-          sleep 2
-          chmod +x ./Scripts/heap_memory_usage.sh
-          bash ./Scripts/heap_memory_usage.sh
+        sleep 2
+        chmod +x ./Scripts/heap_memory_usage.sh
+        bash ./Scripts/heap_memory_usage.sh
