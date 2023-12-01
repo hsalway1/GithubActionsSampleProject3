@@ -10,7 +10,7 @@ env:
   HOME: '/home/runner/.config'
 
 jobs:
-  heap-memory-usage:
+  bootup:
 
     runs-on: ubuntu-latest
 
@@ -76,15 +76,22 @@ jobs:
 
     - name: Install App
       run: |
-        ./gradlew installDebug  
-        
-    - name: Launch App
-      run: |
-        sleep 2
-        adb shell am start -n com.example.githubactionssampleproject3/com.example.githubactionssampleproject3.MainActivity
-        
-    - name: Print Heap memory usage
-      run: |
-        sleep 2
-        chmod +x ./Scripts/heap_memory_usage.sh
-        bash ./Scripts/heap_memory_usage.sh
+        ./gradlew installDebug
+
+  heap_memory_usage:
+  
+    runs-on: ubuntu-latest
+    name: Heap memory profiling
+    needs: bootup
+  
+    steps:
+      - name: Launch app
+        run: |
+          sleep 2
+          adb shell am start -n com.example.githubactionssampleproject3/com.example.githubactionssampleproject3.MainActivity
+  
+      - name: Print heap memory usage\
+        run: |
+          sleep 2
+          chmod +x ./Scripts/heap_memory_usage.sh
+          bash ./Scripts/heap_memory_usage.sh
