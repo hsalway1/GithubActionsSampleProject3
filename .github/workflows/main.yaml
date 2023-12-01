@@ -95,6 +95,7 @@ jobs:
       - uses: actions/download-artifact@master
         with:
           name: my-artifact
+          run: chmod +x ./
           path: ./
         
       - name: Launch app
