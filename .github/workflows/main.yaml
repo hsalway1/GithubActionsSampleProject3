@@ -71,10 +71,10 @@ jobs:
       id: create-emulator
       run: echo "no" |
         avdmanager create avd -n TestAVD -k "system-images;android-30;google_apis_playstore;x86_64"
-        echo "::set-output name=emulator-id::TestAVD"
+        echo "TestAVD" >> "$emulator-id"
 
-    - run: echo "::set-output name=android-home::$ANDROID_HOME"
-    - run: echo "::set-output name=java-home::$JAVA_HOME"
+    - run: echo "$ANDROID_HOME" >> "$android-home"
+    - run: echo "$JAVA_HOME" >> "$java-home"
 
   heap_memory_usage:
   
