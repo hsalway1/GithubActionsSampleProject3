@@ -71,7 +71,6 @@ jobs:
       id: create-emulator
       run: echo "no" |
         avdmanager create avd -n TestAVD -k "system-images;android-30;google_apis_playstore;x86_64"
-        echo "TestAVD" >> "$emulator-id"
 
     - run: echo "$ANDROID_HOME" >> "$android-home"
     - run: echo "$JAVA_HOME" >> "$java-home"
@@ -85,7 +84,6 @@ jobs:
     env:
        ANDROID_HOME: ${{ needs.setup.outputs.android-home }}
        JAVA_HOME: ${{ needs.setup.outputs.java-home }}
-       EMULATOR_ID: ${{ needs.create-emulator.outputs.emulator-id }}
 
     steps:
           
@@ -96,7 +94,7 @@ jobs:
         run: |       
           echo "Starting emulator and waiting for boot to complete...."
           #ls -la $ANDROID_HOME/emulator
-          $ANDROID_HOME/emulator/emulator -avd $EMULATOR_ID -no-skin -no-audio -no-window &
+          $ANDROID_HOME/emulator/emulator -avd TestAVD -no-skin -no-audio -no-window &
           $ANDROID_HOME/platform-tools/adb wait-for-device 
           echo "Emulator has finished booting"
           adb devices
